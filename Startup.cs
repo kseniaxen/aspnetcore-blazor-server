@@ -28,6 +28,7 @@ namespace Advanced {
             });
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages().AddRazorRuntimeCompilation();
+            services.AddServerSideBlazor();
         }
 
         public void Configure(IApplicationBuilder app, DataContext context) {
@@ -41,6 +42,7 @@ namespace Advanced {
                     "controllers/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
+                endpoints.MapBlazorHub();
             });
 
             SeedData.SeedDatabase(context);
