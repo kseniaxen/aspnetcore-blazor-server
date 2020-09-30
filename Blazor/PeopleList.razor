@@ -18,7 +18,7 @@
     }
   </tbody>
 </table>
-<div class="form-group">
+<!-- div class="form-group">
   <label for="city">City</label>
   <select name="city" class="form-control" @bind="SelectedCity">
     <option disabled selected>Select City</option>
@@ -26,13 +26,29 @@
     <option value="@city" selected="@(city == SelectedCity)">@city</option>
     }
   </select>
-</div>
+</div -->
+<SelectFilter
+  values="@Cities"
+  title="@SelectTitle"
+  autofocus="true"
+  name="city"
+  required="true"
+  CustomEvent="@HandleCustom"/>
 @code {
   [Inject]
   public DataContext Context { get; set; }
-  public IEnumerable<Person>People => Context.People.Include(p => p.Department).Include(p => p.Location);
+  public IEnumerable<Person> People => Context.People
+    .Include(p => p.Department)
+    .Include(p => p.Location).Take(ItemCount);
   public IEnumerable<string>Cities => Context.Locations.Select(l => l.City);
   public string SelectedCity { get; set; }
   public string GetClass(string city) =>
     SelectedCity == city ? "bg-info text-white" : ""; 
+  [Parameter]
+  public int ItemCount { get; set; } = 4;
+  [Parameter]
+  public string SelectTitle { get; set; }
+  public void HandleCustom(string newValue) {
+    SelectedCity = newValue;
+  }
 }
