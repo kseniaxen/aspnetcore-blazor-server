@@ -29,6 +29,7 @@ namespace Advanced {
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddServerSideBlazor();
+            services.AddSingleton<Services.ToggleService>();
         }
 
         public void Configure(IApplicationBuilder app, DataContext context) {
