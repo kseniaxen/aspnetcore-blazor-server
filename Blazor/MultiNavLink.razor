@@ -1,7 +1,6 @@
-<a class="@ComputedClass" @onclick="HandleClick"
+<a href="" class="@ComputedClass" @onclick="HandleClick">
   @ChildContent
 </a>
-href="">
 @code {
   [Inject]
   public NavigationManager NavManager { get; set; }
@@ -35,8 +34,7 @@ href="">
   {
     ComputedClass = Class;
     NavManager.LocationChanged += (sender, arg) => CheckMatch(arg.Location);
-    Href = Href.Select(h => h.StartsWith("/") ? h.Substring(1)
-    : h);
+    Href = Href.Select(h => h.StartsWith("/") ? h.Substring(1) : h);
     CheckMatch(NavManager.Uri);
   }
 }
