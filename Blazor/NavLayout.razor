@@ -3,17 +3,22 @@
   <div class="row">
     <div class="col-3">
       @foreach (string key in NavLinks.Keys) {
-      <NavLink class="btn btn-outline-primary btn-block" href="@NavLinks[key]" ActiveClass="btn-primary text-white"
+      @* <NavLink class="btn btn-outline-primary btn-block" href="@NavLinks[key]" ActiveClass="btn-primary text-white"
         Match="NavLinkMatch.Prefix">@key
-      </NavLink>
-      @* <MultiNavLink
+      </NavLink> *@
+      <MultiNavLink
         class="btn btn-outline-primary btn-block"
         href="@NavLinks[key]"
         ActiveClass="btn-primary text-white"
+        DisabledClasses="btn btn-dark text-light btn-block disabled"
+        @ref="Refs[key]"
       >
         @key
-      </MultiNavLink> *@
+      </MultiNavLink>
       }
+      <button class="btn btn-secondary btn-block mt-5 " @onclick="ToggleLinks">
+        Toggle Links
+      </button>
     </div>
     <div class="col">
       @Body
@@ -21,15 +26,24 @@
   </div>
 </div>
 @code {
-   public Dictionary<string, string> NavLinks
+   /* public Dictionary<string, string> NavLinks
      = new Dictionary<string, string> {
       {"People", "/people" },
       {"Departments", "/depts" },
-      {"Details", "/person" }
-  @* public Dictionary<string, string[]> NavLinks
+      {"Details", "/person" } */
+  public Dictionary<string, string[]> NavLinks
      = new Dictionary<string, string[]> {
       {"People", new string[] {"/people", "/" } },
       {"Departments", new string[] {"/depts", "/departments"} },
-      {"Details", new string[] { "/person" } } *@
+      {"Details", new string[] { "/person" } }
     };
+  public Dictionary<string, MultiNavLink> Refs
+    = new Dictionary<string, MultiNavLink>();
+  private bool LinksEnabled = true;
+  public void ToggleLinks() {
+    LinksEnabled = !LinksEnabled;
+    foreach (MultiNavLink link in Refs.Values) {
+      link.SetEnabled(LinksEnabled);
+    }
+  }
 }

@@ -1,5 +1,9 @@
 <a href="" class="@ComputedClass" @onclick="HandleClick">
-  @ChildContent
+  @if (Enabled) {
+    @ChildContent
+  } else {
+    @("Disabled")
+  }
 </a>
 @code {
   [Inject]
@@ -10,6 +14,8 @@
   public string Class { get; set; }
   [Parameter]
   public string ActiveClass { get; set; }
+  [Parameter]
+  public string DisabledClasses { get; set; }
   [Parameter]
   public NavLinkMatch? Match { get; set; }
   public NavLinkMatch ComputedMatch
@@ -22,19 +28,32 @@
   {
     NavManager.NavigateTo(Href.First());
   }
+  private bool Enabled { get; set; } = true;
   private void CheckMatch(string currentUrl)
   {
+    // path - адрес из адресной строки
     string path = NavManager.ToBaseRelativePath(currentUrl);
     path = path.EndsWith("/") ? path.Substring(0, path.Length - 1) : path;
+    // href - адрес, заданный текущему экземпляру компонента
+    // его родителем по вирутальному DOM через параметр
     bool match = Href.Any(href => ComputedMatch == NavLinkMatch.All
     ? path == href : path.StartsWith(href));
-    ComputedClass = match ? $"{Class} {ActiveClass}" : Class;
+    if (!Enabled) {
+      ComputedClass = DisabledClasses;
+    } else {
+      ComputedClass = match ? $"{Class} {ActiveClass}" : Class;
+    }
   }
   protected override void OnParametersSet()
   {
     ComputedClass = Class;
     NavManager.LocationChanged += (sender, arg) => CheckMatch(arg.Location);
     Href = Href.Select(h => h.StartsWith("/") ? h.Substring(1) : h);
+    CheckMatch(NavManager.Uri);
+  }
+
+  public void SetEnabled(bool enabled) {
+    Enabled = enabled;
     CheckMatch(NavManager.Uri);
   }
 }
