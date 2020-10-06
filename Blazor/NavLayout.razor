@@ -29,6 +29,8 @@
 @code {
   [Inject]
   public ToggleService Toggler { get; set; }
+  [Inject]
+  public IJSRuntime JSRuntime { get; set; }
    /* public Dictionary<string, string> NavLinks
      = new Dictionary<string, string> {
       {"People", "/people" },
@@ -46,9 +48,13 @@
   public void ToggleLinks() {
     Toggler.ToggleComponents();
   }
-  protected override void OnAfterRender(bool firstRender) {
+  protected override async void OnAfterRender(bool firstRender) {
     if (firstRender) {
       Toggler.EnrolComponents(Refs.Values);
+      // await JSRuntime.InvokeVoidAsync("createToggleButton");
+      await JSRuntime.InvokeVoidAsync("createToggleButton", DotNetObjectReference.Create(Toggler));
     }
   }
+
+  
 }
