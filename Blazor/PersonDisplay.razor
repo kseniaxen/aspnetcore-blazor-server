@@ -17,6 +17,9 @@ Previous
 <button class="btn btn-outline-primary" @onclick="@(() => HandleClick(true))">
 Next
 </button>
+<button class="btn btn-outline-primary" @onclick="@HandleClick">
+  Invoke JS Function
+</button>
 @code {
   [Parameter]
   public long Id { get; set; }
@@ -25,6 +28,8 @@ Next
   public DataContext Context { get; set; }
   [Inject]
   public NavigationManager NavManager { get; set; }
+  [Inject]
+  public IJSRuntime JSRuntime { get; set; }
   protected async override Task OnParametersSetAsync() {
       await Task.Delay(1000);
       Person = await Context.People
@@ -33,5 +38,8 @@ Next
   public void HandleClick(bool increment) {
     Person = null;
     NavManager.NavigateTo($"/person/{(increment ? Id + 1 : Id  -1)}");
+  }
+  public async Task HandleClick() {
+    await JSRuntime.InvokeVoidAsync("addTableRows", 2);
   }
 }
