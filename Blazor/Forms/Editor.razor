@@ -1,5 +1,9 @@
 @page "/forms/edit/{id:long}"
 @layout EmptyLayout
+@* @implements IDisposable *@
+@* @inherits OwningComponentBase *@
+@inherits OwningComponentBase<DataContext>
+@using Microsoft.Extensions.DependencyInjection
 <link href="/css/blazorValidation.css" rel="stylesheet" />
 
 <h4 class="bg-primary text-center text-white p-2">Edit</h4>
@@ -62,8 +66,10 @@
 @code {
   [Inject]
   public NavigationManager NavManager { get; set; }
-  [Inject]
-  DataContext Context { get; set; }
+  // [Inject]
+  // DataContext Context { get; set; }
+  // DataContext Context => ScopedServices.GetService<DataContext>();
+  DataContext Context => Service;
   [Parameter]
   public long Id { get; set; }
   public Person PersonData { get; set; } = new Person();
@@ -81,4 +87,5 @@
   public string FormSubmitMessage { get; set; } = "Form Data Not Submitted";
   public void HandleValidSubmit() => FormSubmitMessage = "Valid Data Submitted";
   public void HandleInvalidSubmit() => FormSubmitMessage = "Invalid Data Submitted";
+  // public void Dispose() => Context.Entry(PersonData).State = EntityState.Detached;
 }
